@@ -50,21 +50,21 @@ generator client {
 // ----------------------------------------------------
 
 enum ProjectStatus {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
+  Not_Started
+  In_Progress
+  Completed
 }
 
 enum TaskPriority {
-  LOW
-  MEDIUM
-  HIGH
+  Low
+  Medium
+  High
 }
 
 enum TaskStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
+  Pending
+  In_Progress
+  Completed
 }
 
 // ----------------------------------------------------
@@ -77,6 +77,7 @@ model User {
   password  String    // Stored as bcrypt hash
   fullName  String
   projects  Project[]
+  tasks     Task[]
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
 
@@ -87,7 +88,7 @@ model Project {
   id          String        @id @default(uuid())
   name        String
   description String?       @db.Text
-  status      ProjectStatus @default(NOT_STARTED)
+  status      ProjectStatus @default(Not_Started)
   startDate   DateTime?     @map("start_date")
   endDate     DateTime?     @map("end_date")
   userId      String        @map("user_id")
@@ -104,15 +105,18 @@ model Task {
   id          String       @id @default(uuid())
   name        String
   description String?      @db.Text
-  priority    TaskPriority @default(MEDIUM)
-  status      TaskStatus   @default(PENDING)
+  priority    TaskPriority @default(Medium)
+  status      TaskStatus   @default(Pending)
   dueDate     DateTime?    @map("due_date")
   projectId   String       @map("project_id")
   project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      String       @map("user_id")
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
   @@index([projectId])
+  @@index([userId])
   @@map("tasks")
 }
 ```
@@ -129,10 +133,10 @@ model Task {
 *   `id` (UUIDv4): Primary key.
 *   `name` (String): Name of the project (e.g., "Website Redesign").
 *   `description` (String, Optional): Rich details, mapped to PostgreSQL `TEXT`.
-*   `status` (Enum): Lifecycle stage. Defaults to `NOT_STARTED`.
-    *   `NOT_STARTED`
-    *   `IN_PROGRESS`
-    *   `COMPLETED`
+*   `status` (Enum): Lifecycle stage. Defaults to `Not_Started`.
+    *   `Not_Started`
+    *   `In_Progress`
+    *   `Completed`
 *   `startDate` (DateTime, Optional): Scheduled project launch window.
 *   `endDate` (DateTime, Optional): Targeted project completion date.
 *   `userId` (UUIDv4): Foreign key linking to `User.id`. Cascades on deletion.
@@ -141,16 +145,17 @@ model Task {
 *   `id` (UUIDv4): Primary key.
 *   `name` (String): Descriptive task title.
 *   `description` (String, Optional): Mapped to PostgreSQL `TEXT`.
-*   `priority` (Enum): Criticality level. Defaults to `MEDIUM`.
-    *   `LOW`
-    *   `MEDIUM`
-    *   `HIGH`
-*   `status` (Enum): Progress state. Defaults to `PENDING`.
-    *   `PENDING`
-    *   `IN_PROGRESS`
-    *   `COMPLETED`
+*   `priority` (Enum): Criticality level. Defaults to `Medium`.
+    *   `Low`
+    *   `Medium`
+    *   `High`
+*   `status` (Enum): Progress state. Defaults to `Pending`.
+    *   `Pending`
+    *   `In_Progress`
+    *   `Completed`
 *   `dueDate` (DateTime, Optional): Hard deadline for task completion.
 *   `projectId` (UUIDv4): Foreign key referencing `Project.id`. Cascades on deletion.
+*   `userId` (UUIDv4): Foreign key referencing `User.id`. Cascades on deletion.
 
 ---
 
@@ -267,36 +272,36 @@ The dashboard provides real-time statistics regarding projects and tasks under t
     ```
 
 #### 3. Completed Tasks
-*   **Description:** Count of tasks with status `COMPLETED` belonging to the user's projects.
+*   **Description:** Count of tasks with status `Completed` belonging to the user's projects.
 *   **Prisma Logic:**
     ```javascript
     const completedTasks = await prisma.task.count({
       where: {
-        status: "COMPLETED",
+        status: "Completed",
         project: { userId: req.currentUser.id }
       }
     });
     ```
 
 #### 4. Pending Tasks
-*   **Description:** Count of tasks with status `PENDING` belonging to the user's projects.
+*   **Description:** Count of tasks with status `Pending` belonging to the user's projects.
 *   **Prisma Logic:**
     ```javascript
     const pendingTasks = await prisma.task.count({
       where: {
-        status: "PENDING",
+        status: "Pending",
         project: { userId: req.currentUser.id }
       }
     });
     ```
 
 #### 5. Projects In Progress
-*   **Description:** Count of projects owned by the user with status `IN_PROGRESS`.
+*   **Description:** Count of projects owned by the user with status `In_Progress`.
 *   **Prisma Logic:**
     ```javascript
     const projectsInProgress = await prisma.project.count({
       where: {
-        status: "IN_PROGRESS",
+        status: "In_Progress",
         userId: req.currentUser.id
       }
     });
@@ -311,18 +316,18 @@ The frontend must allow dynamic searching and filtering. The backend must ingest
 ### Project Search & Filtering Parameters (`GET /api/projects`)
 *   `search` (String): Performs a case-insensitive, partial-match search on the project name.
     *   *Prisma match expression:* `{ name: { contains: search, mode: 'insensitive' } }`
-*   `status` (String): Filters projects matches against a status enum value (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`).
+*   `status` (String): Filters projects matches against a status enum value (`Not_Started`, `In_Progress`, `Completed`).
 
 ### Task Search & Filtering Parameters (`GET /api/tasks`)
 *   `search` (String): Case-insensitive partial-match search on the task name.
     *   *Prisma match expression:* `{ name: { contains: search, mode: 'insensitive' } }`
 *   `projectId` (UUIDv4): Scopes tasks strictly to a specific project.
-*   `status` (String): Filters tasks by state (`PENDING`, `IN_PROGRESS`, `COMPLETED`).
-*   `priority` (String): Filters tasks by urgency (`LOW`, `MEDIUM`, `HIGH`).
+*   `status` (String): Filters tasks by state (`Pending`, `In_Progress`, `Completed`).
+*   `priority` (String): Filters tasks by urgency (`Low`, `Medium`, `High`).
 
 ### Example Integration Flow for Search & Filters (Express Middleware)
 ```javascript
-// GET /api/tasks?search=Setup&priority=HIGH&projectId=xxxx-yyyy-zzzz
+// GET /api/tasks?search=Setup&priority=High&projectId=xxxx-yyyy-zzzz
 router.get("/tasks", async (req, res, next) => {
   try {
     const { search, priority, status, projectId } = req.query;
@@ -339,10 +344,10 @@ router.get("/tasks", async (req, res, next) => {
       whereClause.name = { contains: search, mode: "insensitive" };
     }
     if (priority) {
-      whereClause.priority = priority; // e.g. "HIGH"
+      whereClause.priority = priority; // e.g. "High"
     }
     if (status) {
-      whereClause.status = status; // e.g. "COMPLETED"
+      whereClause.status = status; // e.g. "Completed"
     }
 
     const tasks = await prisma.task.findMany({
