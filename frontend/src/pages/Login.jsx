@@ -134,9 +134,6 @@ const Login = () => {
                 <label className="block text-slate-700 text-xs font-semibold uppercase tracking-wider" htmlFor="password">
                   Password
                 </label>
-                <a href="#forgot" className="text-xs font-semibold text-blue-600 hover:text-blue-500 transition duration-150">
-                  Forgot?
-                </a>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
