@@ -91,10 +91,8 @@ const Register = () => {
       <div className="w-full max-w-md">
         {/* Logo and title */}
         <div className="flex flex-col items-center mb-8">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 shadow-md shadow-blue-500/20 text-white font-bold text-xl">
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
+          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 shadow-md shadow-blue-500/20 p-2">
+            <img src="/favicon.svg" alt="ProjectFlow Logo" className="w-8 h-8" />
           </div>
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">ProjectFlow Workspace</h2>
           <p className="mt-1 text-slate-500 text-sm">Create a secure profile for your company dashboard</p>
