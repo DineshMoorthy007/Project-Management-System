@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+// 1. THIS IS THE MAGIC FIX: Point all axios requests to your environment variable
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
