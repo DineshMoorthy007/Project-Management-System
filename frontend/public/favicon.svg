@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <!-- White-ish glow for board outline -->
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1" />
+    </linearGradient>
+    <!-- Soft shadow filter for the checkmark -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="135%" height="135%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Rounded App Icon Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+
+  <!-- Grid Pattern (Watermark style) -->
+  <g opacity="0.12">
+    <line x1="64" y1="128" x2="448" y2="128" stroke="#ffffff" stroke-width="4" />
+    <line x1="64" y1="256" x2="448" y2="256" stroke="#ffffff" stroke-width="4" />
+    <line x1="64" y1="384" x2="448" y2="384" stroke="#ffffff" stroke-width="4" />
+    <line x1="160" y1="64" x2="160" y2="448" stroke="#ffffff" stroke-width="4" />
+    <line x1="320" y1="64" x2="320" y2="448" stroke="#ffffff" stroke-width="4" />
+  </g>
+
+  <!-- Dashboard Container Block (Glassmorphism effect) -->
+  <rect x="110" y="110" width="292" height="292" rx="48" fill="#ffffff" fill-opacity="0.1" stroke="url(#glowGrad)" stroke-width="6" />
+
+  <!-- Progress Bar Indicators inside the container -->
+  <!-- Bar 1 -->
+  <rect x="150" y="170" width="212" height="24" rx="12" fill="#ffffff" fill-opacity="0.2" />
+  <rect x="150" y="170" width="130" height="24" rx="12" fill="#ffffff" fill-opacity="0.85" />
+  <!-- Bar 2 -->
+  <rect x="150" y="224" width="212" height="24" rx="12" fill="#ffffff" fill-opacity="0.2" />
+  <rect x="150" y="224" width="180" height="24" rx="12" fill="#38bdf8" />
+  <!-- Bar 3 -->
+  <rect x="150" y="278" width="150" height="24" rx="12" fill="#ffffff" fill-opacity="0.2" />
+  <rect x="150" y="278" width="60" height="24" rx="12" fill="#a855f7" />
+
+  <!-- Stylized floating checkmark representing completion -->
+  <g filter="url(#dropShadow)">
+    <!-- Checklist circle badge -->
+    <circle cx="340" cy="330" r="56" fill="#10b981" />
+    <!-- White check icon inside circle -->
+    <path d="M308 330 L328 350 L372 306" stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
