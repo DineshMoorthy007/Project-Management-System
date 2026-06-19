@@ -113,10 +113,10 @@ const Dashboard = () => {
       };
 
       if (editingProject) {
-        await axios.put(`http://localhost:5000/api/projects/${editingProject.id}`, payload, config);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/projects/${editingProject.id}`, payload, config);
         setEditingProject(null);
       } else {
-        await axios.post('http://localhost:5000/api/projects', payload, config);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/projects`, payload, config);
         setIsProjectModalOpen(false);
       }
 
@@ -157,10 +157,10 @@ const Dashboard = () => {
       };
 
       if (editingTask) {
-        await axios.put(`http://localhost:5000/api/tasks/${editingTask.id}`, payload, config);
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/tasks/${editingTask.id}`, payload, config);
         setEditingTask(null);
       } else {
-        await axios.post('http://localhost:5000/api/tasks', payload, config);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/tasks`, payload, config);
         setIsTaskModalOpen(false);
       }
 
@@ -182,7 +182,7 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       };
-      await axios.delete(`http://localhost:5000/api/projects/${id}`, config);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/projects/${id}`, config);
       fetchData(true);
     } catch (err) {
       alert(err.response?.data?.message || err.message || 'Failed to delete project.');
@@ -199,7 +199,7 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       };
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, config);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/tasks/${id}`, config);
       fetchData(true);
     } catch (err) {
       alert(err.response?.data?.message || err.message || 'Failed to delete task.');
@@ -229,8 +229,8 @@ const Dashboard = () => {
 
       // Fetch projects and tasks concurrently with security header config
       const [projectsRes, tasksRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/projects', config),
-        axios.get('http://localhost:5000/api/tasks', config)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/projects`, config),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/tasks`, config)
       ]);
 
       setProjects(Array.isArray(projectsRes.data?.data) ? projectsRes.data.data : []);
