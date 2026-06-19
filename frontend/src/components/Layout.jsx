@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { Outlet, useNavigate, Link } from 'react-router-dom';
+import React from 'react';
+import { Outlet, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User as UserIcon, LayoutDashboard, Folder, ListTodo } from 'lucide-react';
 
 const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'overview';
+
+  const setActiveTab = (tabName) => {
+    setSearchParams({ tab: tabName });
+  };
 
   const handleLogout = async () => {
     await logout();

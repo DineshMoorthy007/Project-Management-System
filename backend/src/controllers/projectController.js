@@ -6,13 +6,35 @@ const VALID_STATUSES = ['Not_Started', 'In_Progress', 'Completed'];
 /**
  * Get all projects for the authenticated user
  * GET /api/projects
+ * Query params: page (default 1), limit (default 10)
  */
 const getAllProjects = async (req, res, next) => {
   try {
+    // 1. Parse and validate pagination parameters
+    let page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+
+    // 2. Validate page and limit are positive integers
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 10;
+    if (limit > 100) limit = 100; // Cap limit to prevent abuse
+
+    // 3. Calculate skip
+    const skip = (page - 1) * limit;
+
+    // 4. Build where clause for tenant isolation
+    const whereClause = {
+      userId: req.user.id
+    };
+
+    // 5. Execute count query for total items (still with tenant isolation)
+    const totalItems = await prisma.project.count({
+      where: whereClause
+    });
+
+    // 6. Execute paginated query (with tenant isolation maintained)
     const projects = await prisma.project.findMany({
-      where: {
-        userId: req.user.id
-      },
+      where: whereClause,
       select: {
         id: true,
         name: true,
@@ -25,12 +47,22 @@ const getAllProjects = async (req, res, next) => {
       },
       orderBy: {
         createdAt: 'desc'
-      }
+      },
+      take: limit,
+      skip: skip
     });
+
+    // 7. Calculate total pages
+    const totalPages = Math.ceil(totalItems / limit);
 
     return res.status(200).json({
       success: true,
-      data: projects
+      data: projects,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page
+      }
     });
   } catch (error) {
     next(error);

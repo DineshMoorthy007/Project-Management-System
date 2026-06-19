@@ -104,7 +104,7 @@ async function seed() {
     console.log(`  - Task 3: ${task3.name} (Status: ${task3.status}, Priority: ${task3.priority})`);
     console.log(`  - Task 4: ${task4.name} (Status: ${task4.status}, Priority: ${task4.priority})`);
 
-    console.log('\n[Seeder] Seeding completed successfully! 🚀');
+    console.log('\n[Seeder] Seeding completed successfully!');
 
   } catch (error) {
     console.error('[Seeder ERROR] Seeding failed:');

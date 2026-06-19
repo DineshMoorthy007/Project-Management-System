@@ -9,18 +9,30 @@ const VALID_STATUSES = ['Pending', 'In_Progress', 'Completed'];
 /**
  * Get all tasks for the authenticated user
  * GET /api/tasks
- * Optional query params: projectId (to filter by project)
+ * Query params: projectId (optional filter), page (default 1), limit (default 10)
  */
 const getAllTasks = async (req, res, next) => {
   try {
     const { projectId } = req.query;
 
-    // Build where clause for tenant isolation
+    // 1. Parse and validate pagination parameters
+    let page = parseInt(req.query.page, 10) || 1;
+    let limit = parseInt(req.query.limit, 10) || 10;
+
+    // 2. Validate page and limit are positive integers
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 10;
+    if (limit > 100) limit = 100; // Cap limit to prevent abuse
+
+    // 3. Calculate skip
+    const skip = (page - 1) * limit;
+
+    // 4. Build where clause for tenant isolation
     const whereClause = {
       userId: req.user.id
     };
 
-    // If projectId filter is provided, validate it belongs to user
+    // 5. If projectId filter is provided, validate it belongs to user
     if (projectId) {
       if (typeof projectId !== 'string' || !projectId.trim()) {
         return res.status(400).json({
@@ -55,6 +67,12 @@ const getAllTasks = async (req, res, next) => {
       whereClause.projectId = projectId.trim();
     }
 
+    // 6. Execute count query for total items (with tenant isolation maintained)
+    const totalItems = await prisma.task.count({
+      where: whereClause
+    });
+
+    // 7. Execute paginated query (with tenant isolation maintained)
     const tasks = await prisma.task.findMany({
       where: whereClause,
       select: {
@@ -70,12 +88,22 @@ const getAllTasks = async (req, res, next) => {
       },
       orderBy: {
         createdAt: 'desc'
-      }
+      },
+      take: limit,
+      skip: skip
     });
+
+    // 8. Calculate total pages
+    const totalPages = Math.ceil(totalItems / limit);
 
     return res.status(200).json({
       success: true,
-      data: tasks
+      data: tasks,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: page
+      }
     });
   } catch (error) {
     next(error);
