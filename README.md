@@ -85,5 +85,5 @@ This coordinates three distinct services:
 ## Documentation & Reference
 
 For complete engineering specifications, APIs, and database structure references, consult the following documentation:
-*   **API Enpoints & Requests Specs:** See [API_DOCUMENTATION.md](file:///d:/Projects/Project-Management-System/API_DOCUMENTATION.md)
-*   **Prisma Database Entity ERD:** See [DATABASE_SCHEMA.md](file:///d:/Projects/Project-Management-System/DATABASE_SCHEMA.md)
+*   **API Enpoints & Requests Specs:** See [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+*   **Prisma Database Entity ERD:** See [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)
